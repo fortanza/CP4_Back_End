@@ -1,0 +1,49 @@
+# OK! - it should get the users list
+GET http://localhost:5050/users
+
+###
+# OK! - it should get the users #1
+GET http://localhost:5050/users/1
+
+### OK! - it should create a new users
+POST http://localhost:5050/users HTTP/1.1
+content-type: application/json
+
+{
+  "firstName": "Benoit", 
+  "lastName": "Zenone", 
+  "quality" : "student",
+  "photo": "https://drive.google.com/file/d/1xPBDASdqsssNV_Fha_olk8qc6hQUs3FQ/view?usp=sharing",
+  "campusName": "Lille",
+  "age": "28", 
+  "animal":"Non", 
+  "animalName": "Non", "favoriteDish": "Pizza", 
+  "wildSide": "Je chante des opening d'anime sous la douche", 
+  "hobby": "Cinéma, manga, anime", 
+  "shill": "Web", 
+  "motivation":"J'ai intégré la Wild pour devenir developpeur web, et ce métier m'attire pour le côté passionnant de la tech"
+}
+
+### it should update book #1
+PUT http://localhost:5050/users/1 HTTP/1.1
+content-type: application/json
+
+{
+  "firstName": "Tchoupi", 
+  "lastName": "Tchoupi", 
+  "quality" : "instructors",
+  "photo": "https://drive.google.com/file/d/1xPBDASdqsssNV_Fha_olk8qc6hQUs3FQ/view?usp=sharing",
+  "campusName": "Lille",
+  "age": "100", 
+  "animal":"oui", 
+  "animalName": "Pluto", 
+  "favoriteDish": "Salade", 
+  "wildSide": "Conduire la voiture", 
+  "hobby": "Lire", 
+  "shill": "télé", 
+  "motivation":"J'ai intégré la Wild pour devenir developpeur web, et ce métier m'attire pour le côté passionnant de la tech"
+}
+
+### it should delete book #1
+DELETE http://localhost:5050/users/1 HTTP/1.1
+
