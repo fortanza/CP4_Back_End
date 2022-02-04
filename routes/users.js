@@ -7,8 +7,8 @@ router.get('/', async (req, res) => {
   const [users] = await db.query(`
   SELECT firstName, lastName, quality, photo, campusName, age, animal,animalName,favoriteDish,wildSide,hobby,skill,motivation
   FROM users AS u
-  INNER JOIN campus AS c ON u.id = c.id
-  INNER JOIN informations AS i ON u.id = i.id
+  INNER JOIN campus AS c ON u.campusId = c.id
+  INNER JOIN informations AS i ON u.informationsId = i.id
   `);
   res.json(users);
 });
@@ -35,45 +35,66 @@ router.get('/:id', async (req, res) => {
 });
 
 router.post('/', async (req, res) => {
-  const {
-    firstName,
-    lastName,
-    quality,
-    photo,
-    campusName,
-    age,
-    animal,
-    animalName,
-    favoriteDish,
-    wildSide,
-    hobby,
-    skill,
-    motivation,
-  } = req.body;
-  console.log(req.body);
-  const userRes = await db.query(
-    `
-    INSERT INTO users (firstName, lastName, quality, photo)
-    VALUES (?,?,?,?);
-  `,
-    [firstName, lastName, quality, photo]
-  );
-  const campusRes = await db.query(
-    `
-    INSERT INTO campus (campusName)
-    VALUES (?);
-  `,
-    [campusName]
-  );
-  const infoRes = await db.query(
-    `
-    INSERT INTO informations (age, animal,animalName,favoriteDish,wildSide,hobby,skill,motivation)
-    VALUES (?,?,?,?,?,?,?,?);
-  `,
-    [age, animal, animalName, favoriteDish, wildSide, hobby, skill, motivation]
-  );
+  try {
+    const {
+      firstName,
+      lastName,
+      quality,
+      photo,
+      campusName,
+      campusId,
+      informationsId,
+      age,
+      animal,
+      animalName,
+      favoriteDish,
+      wildSide,
+      hobby,
+      skill,
+      motivation,
+    } = req.body;
+    console.log(req.body);
+    await db.query(
+      `
+      INSERT INTO campus (campusName)
+      VALUES (?);
+      `,
+      [campusName]
+    );
+    await db.query(
+      `
+        INSERT INTO informations (age, animal,animalName,favoriteDish,wildSide,hobby,skill,motivation)
+        VALUES (?,?,?,?,?,?,?,?);
+        `,
+      [
+        age,
+        animal,
+        animalName,
+        favoriteDish,
+        wildSide,
+        hobby,
+        skill,
+        motivation,
+      ]
+    );
+    const [resSql] = await db.query(
+      `
+          INSERT INTO users (firstName, lastName, quality, photo, campusId, informationsId)
+          VALUES (?,?,?,?,?,?);
+        `,
+      [firstName, lastName, quality, photo, campusId, informationsId]
+    );
 
-  res.status(201).send(userRes, campusRes, infoRes);
+    const newData = {
+      ...req.body,
+      campusId: resSql.campusId,
+      informationsId: resSql.informationsId,
+    };
+    res.status(201).json(newData);
+  } catch (err) {
+    console.log(err);
+    res.status(404).send('error here !');
+  }
 });
 
 router.delete('/:id', async (req, res) => {

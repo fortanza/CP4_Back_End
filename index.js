@@ -15,7 +15,5 @@ app.use('/', (req, res) => {
 });
 
 app.listen(backPort, () => {
-  console.log(
-    `express-revisions API now available on http://localhost:${backPort} !`
-  );
+  console.log(`Wild-Board now available on http://localhost:${backPort} !`);
 });
